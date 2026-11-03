@@ -2,9 +2,19 @@ import { createBrowserClient } from '@supabase/ssr'
 
 // Create a single supabase client for the app with safe cookie parsing
 export function createClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      "[Supabase Client] Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY.\n" +
+      "Ensure these environment variables are defined in your .env.local file."
+    );
+  }
+
   return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    supabaseUrl || "",
+    supabaseAnonKey || "",
     {
       cookies: {
         getAll() {
@@ -58,4 +68,3 @@ export async function signOut() {
     console.warn('[signOut] Sign out error:', err?.message);
   }
 }
-
